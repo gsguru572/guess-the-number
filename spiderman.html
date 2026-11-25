@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Guess The Number</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            background: #080b18;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            overflow: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: #713cff;
+            filter: blur(170px);
+            opacity: 0.4;
+            top: -100px;
+            left: -100px;
+        }
+
+        body::after {
+            content: "";
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: #00c8ff;
+            filter: blur(170px);
+            opacity: 0.3;
+            bottom: -100px;
+            right: -100px;
+        }
+
+        .container {
+            width: 420px;
+            padding: 40px 35px;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 25px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 70px rgba(0,0,0,0.5);
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            animation: appear 0.8s ease;
+        }
+
+        @keyframes appear {
+            from { opacity: 0; transform: translateY(40px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo {
+            width: 75px;
+            height: 75px;
+            margin: 0 auto 20px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 35px;
+            box-shadow: 0 0 30px rgba(139,92,246,0.5);
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, white, #a78bfa, #67e8f9);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: #a5abc5;
+            font-size: 13px;
+            margin-bottom: 30px;
+        }
+
+        .number-box {
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+        .number-box p {
+            font-size: 12px;
+            color: #a5abc5;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .number-box h2 {
+            font-size: 35px;
+            color: #a78bfa;
+        }
+
+        input {
+            width: 100%;
+            padding: 16px;
+            background: rgba(255,255,255,0.07);
+            border: 2px solid rgba(255,255,255,0.12);
+            border-radius: 12px;
+            color: white;
+            font-size: 18px;
+            font-family: inherit;
+            text-align: center;
+            outline: none;
+            margin-bottom: 18px;
+            transition: 0.3s;
+        }
+
+        input::placeholder { color: #777f9f; }
+
+        input:focus {
+            border-color: #8b5cf6;
+            box-shadow: 0 0 18px rgba(139,92,246,0.3);
+        }
+
+        input:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(90deg, #7c3aed, #2563eb);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 5px 25px rgba(124,58,237,0.35);
+        }
+
+        button:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 35px rgba(124,58,237,0.6);
+        }
+
+        button:active { transform: scale(0.97); }
+
+        #answer {
+            margin-top: 22px;
+            min-height: 28px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #a5abc5;
+        }
+
+        #answer.win  { color: #4ade80; }
+        #answer.lose { color: #f87171; }
+        #answer.hint { color: #fbbf24; }
+
+        .score-container {
+            margin-top: 25px;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+        }
+
+        .score-container p {
+            color: #a5abc5;
+            font-size: 13px;
+        }
+
+        #score {
+            font-size: 20px;
+            font-weight: 700;
+            color: #67e8f9;
+        }
+
+        .footer {
+            margin-top: 25px;
+            font-size: 11px;
+            color: #737c9c;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                width: 90%;
+                padding: 30px 22px;
+            }
+            h1 { font-size: 24px; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="logo">🎯</div>
+
+        <h1>Guess The Number</h1>
+
+        <p class="subtitle">Challenge your mind. Test your luck.</p>
+
+        <div class="number-box">
+            <p>GUESS THE NUMBER BETWEEN</p>
+            <h2>01 - 10</h2>
+        </div>
+
+        <input
+            type="text"
+            inputmode="numeric"
+            maxlength="2"
+            id="guessnumber"
+            placeholder="Enter your number"
+            autocomplete="off"
+        >
+
+        <button type="button" id="checkBtn">CHECK YOUR GUESS →</button>
+
+        <p id="answer">Right or Wrong?</p>
+
+        <div class="score-container">
+            <p>YOUR SCORE</p>
+            <span id="score">Score: 10</span>
+        </div>
+
+        <div class="footer">THINK SMART • GUESS RIGHT • WIN BIG</div>
+
+    </div>
+
+    <script>
+        var guessnumber = document.getElementById("guessnumber");
+        var answer = document.getElementById("answer");
+        var score = document.getElementById("score");
+        var checkBtn = document.getElementById("checkBtn");
+
+        var randomnumber;
+        var totalscore;
+        var gameOver;
+
+        function startGame() {
+            randomnumber = Math.floor(Math.random() * 10) + 1;
+            totalscore = 10;
+            gameOver = false;
+
+            score.textContent = "Score: " + totalscore;
+            answer.textContent = "Right or Wrong?";
+            answer.className = "";
+            guessnumber.value = "";
+            guessnumber.disabled = false;
+            checkBtn.textContent = "CHECK YOUR GUESS →";
+            guessnumber.focus();
+        }
+
+        function endGame(message, cssClass) {
+            gameOver = true;
+            answer.textContent = message;
+            answer.className = cssClass;
+            guessnumber.disabled = true;
+            checkBtn.textContent = "PLAY AGAIN";
+        }
+
+        function handleClick() {
+            if (gameOver) {
+                startGame();
+            } else {
+                check();
+            }
+        }
+
+        function check() {
+            var text = guessnumber.value.trim();
+            var enternumber = Number(text);
+
+            if (text === "" || !Number.isInteger(enternumber) ||
+                enternumber < 1 || enternumber > 10) {
+                answer.textContent = "Enter a whole number from 1 to 10";
+                answer.className = "hint";
+                return;
+            }
+
+            if (enternumber === randomnumber) {
+                endGame("Right! You won 🎉", "win");
+                return;
+            }
+
+            totalscore = totalscore - 1;
+            score.textContent = "Score: " + totalscore;
+
+            if (totalscore <= 0) {
+                endGame("GAME OVER 💀 The number was " + randomnumber, "lose");
+                return;
+            }
+
+            answer.textContent = enternumber < randomnumber
+                ? "Wrong — try a higher number"
+                : "Wrong — try a lower number";
+            answer.className = "hint";
+            guessnumber.value = "";
+            guessnumber.focus();
+        }
+
+        checkBtn.addEventListener("click", handleClick);
+
+        guessnumber.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                handleClick();
+            }
+        });
+
+        startGame();
+    </script>
+
+</body>
+</html>
